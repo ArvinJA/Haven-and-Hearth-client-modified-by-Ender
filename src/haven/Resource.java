@@ -58,7 +58,7 @@ public class Resource implements Comparable<Resource>, Prioritized, Serializable
     public static Class<AButton> action = AButton.class;
     public static Class<Audio> audio = Audio.class;
     public static Class<Tooltip> tooltip = Tooltip.class;
-    public boolean hide = false, once = false, skiphighlight = false, skiphide = false;
+    public boolean hide = false, once = false, skiphighlight = false, skiphide = false, mark = true;
 
     static {
 	try {
@@ -118,6 +118,14 @@ public class Resource implements Comparable<Resource>, Prioritized, Serializable
 	    }
 	}
     }
+	
+	public static void checkhighlight(){
+		synchronized (cache) {
+			for(Resource res : cache.values()){
+			res.checkhighlighted();
+			}
+		}
+    }
     
     public void checkhidden(){
 	hide = false;
@@ -127,6 +135,16 @@ public class Resource implements Comparable<Resource>, Prioritized, Serializable
 		break;
 	    }
 	}
+    }
+	
+	public void checkhighlighted(){
+		mark = false;
+		for(String item : Config.highlightObjectList){
+			if(name.contains(item)){
+			mark = true;
+			break;
+			}
+		}
     }
     
     public static void addcache(ResCache cache) {

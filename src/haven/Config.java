@@ -66,6 +66,8 @@ public class Config {
     public static String loadwaited, allused;
     public static boolean xray;
     public static boolean hide;
+	public static boolean mark;
+	public static boolean radar = true;
     public static boolean grid;
     public static boolean timestamp;
     public static boolean new_chat;
@@ -76,6 +78,7 @@ public class Config {
     public static boolean new_minimap;
     public static boolean simple_plants = false;
     public static Set<String> hideObjectList;
+	public static Set<String> highlightObjectList;
     public static HashMap<Pattern, String> smileys;
     public static boolean nightvision;
     public static String currentCharName;
@@ -129,6 +132,8 @@ public class Config {
 	    nopreload = getprop("haven.nopreload", "no").equals("yes");
 	    xray = false;
 	    hide = false;
+		mark = true;
+		radar = true;
 	    grid = false;
 	    timestamp = false;
 	    nightvision = false;
@@ -140,6 +145,7 @@ public class Config {
 	    options = new Properties();
 	    window_props = new Properties();
 	    hideObjectList = Collections.synchronizedSet(new HashSet<String>());
+		highlightObjectList = Collections.synchronizedSet(new HashSet<String>());
 	    loadOptions();
 	    loadWindowOptions();
 	    loadSmileys();
@@ -375,6 +381,7 @@ public class Config {
             System.out.println(e);
         }
         String hideObjects = options.getProperty("hideObjects", "");
+		String highlightObjects = options.getProperty("highlightObjects", "");
         GoogleTranslator.apikey = options.getProperty("GoogleAPIKey", "AIzaSyCuo-ukzI_J5n-inniu2U7729ZfadP16_0");
         zoom = options.getProperty("zoom", "false").equals("true");
         noborders = options.getProperty("noborders", "false").equals("true");
@@ -402,6 +409,7 @@ public class Config {
         musicVol = Integer.parseInt(options.getProperty("music_vol", "100"));
         currentVersion = options.getProperty("version", "");
         hideObjectList.clear();
+		highlightObjectList.clear();
         if (!hideObjects.isEmpty()) {
             for (String objectName : hideObjects.split(",")) {
                 if (!objectName.isEmpty()) {
@@ -409,7 +417,15 @@ public class Config {
                 }
             }
         }
+		if (!highlightObjects.isEmpty()) {
+            for (String objectName : highlightObjects.split(",")) {
+                if (!objectName.isEmpty()) {
+                    highlightObjectList.add(objectName);
+                }
+            }
+        }
         Resource.checkhide();
+		Resource.checkhighlight();
         timestamp = options.getProperty("timestamp","false").equals("true");
     }
 
@@ -441,18 +457,30 @@ public class Config {
 	hideObjectList.add(str);
 	Resource.checkhide();
     }
+	
+	public static void addmark(String str){
+	highlightObjectList.add(str);
+	Resource.checkhighlight();
+    }
     
     public static void remhide(String str){
 	hideObjectList.remove(str);
 	Resource.checkhide();
     }
+	
+	public static void remmark(String str){
+	highlightObjectList.remove(str);
+	Resource.checkhighlight();
+    }
     
     public static void saveOptions() {
         String hideObjects = "";
+		String highlightObjects = "";
         for (String objectName : hideObjectList) {
             hideObjects += objectName+",";
         }
         options.setProperty("hideObjects", hideObjects);
+		options.setProperty("highlightObjects", highlightObjects);
         options.setProperty("GoogleAPIKey", GoogleTranslator.apikey);
         options.setProperty("timestamp", (timestamp)?"true":"false");
         options.setProperty("zoom", zoom?"true":"false");

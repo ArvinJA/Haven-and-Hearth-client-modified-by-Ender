@@ -80,6 +80,7 @@ public class MapView extends Widget implements DTarget, Console.Directory {
     double scales[] = {0.5, 0.66, 0.8, 0.9, 1, 1.25, 1.5, 1.75, 2};
     Map<String, Integer> radiuses;
     int beast_check_delay = 0;
+	static Map<Coord, Coord> hostiles = new HashMap<Coord, Coord>();
     
     public double getScale() {
         return Config.zoom?_scale:1;
@@ -891,6 +892,70 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 	}
 	g.chcolor();
     }
+	
+	private void humanradar(GOut g) {
+		int humancounter = 0;
+		synchronized (glob.oc) {
+			hostiles.clear();
+			for (Gob gob : glob.oc) {
+				boolean human = false;
+				Layered lay = gob.getattr(Layered.class);
+				if(lay != null && lay.layers != null) {
+					KinInfo kin = gob.getattr(KinInfo.class);
+					for(Indir<Resource> res : lay.layers){
+						if (res.get() != null) {
+							String r = res.get().name;
+							if(r.indexOf("body")>= 0 || r.indexOf("hair")>= 0) {
+								Resource.Neg neg = lay.base.get().layer(Resource.negc);
+								if (neg.cc.x == 34 && neg.cc.y == 48 && neg.bs.y == 4) {
+									if (kin != null) {
+										if (kin.group == 0) {
+											human = true;
+										}
+									} else {
+										if (gob != glob.oc.getgob(playergob)) {
+											human = true;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+				if (human) {
+					humancounter++;
+					if ((gob.sc != null) && (gob.rc != null)) {
+						g.chcolor(251, 82, 3, 96);
+						drawradius(g, gob.sc, 100);
+						hostiles.put(gob.rc, gob.sc);
+					}
+					
+				}
+			}
+			if (humancounter > 0) {
+				Text.Foundry threattext = new Text.Foundry("Sans-serif", (int)Math.round((20/_scale)));
+				g.chcolor(251, 82, 3, 255);
+				g.aimage(threattext.render("Potential hostile detected").tex(), new Coord((int)Math.round((130/_scale)), (int)Math.round((110/_scale))), 0.5, 0.5);
+			}
+		}
+		g.chcolor();
+	}
+	
+	private void drawhighlight(GOut g) {
+		String name;
+		g.chcolor(100, 253, 100, 96);
+		synchronized (glob.oc) {
+			for (Gob tg : glob.oc) {
+				name = tg.resname();
+				for(String item : Config.highlightObjectList){
+					if ((tg.sc!=null)&&(name.indexOf("/cdv")<0)&&(name.indexOf(item)>=0)) {
+						drawradius(g, tg.sc, 10);
+					}
+				}
+			}
+		}
+		g.chcolor();
+    }
     
     private void drawtracking(GOut g) {
 	g.chcolor(255, 0, 255, 128);
@@ -1079,6 +1144,14 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 	
 	if(Config.showBeast){
 	    drawbeastradius(g);
+	}
+	
+	if(Config.radar){
+		humanradar(g);
+	}
+	
+	if(Config.mark){
+	    drawhighlight(g);
 	}
 	
 	drawtracking(g);

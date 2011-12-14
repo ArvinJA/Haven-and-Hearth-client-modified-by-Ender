@@ -217,6 +217,13 @@ public class OptWnd extends Window {
 		    Config.saveOptions();
 		}
 	    }).a = Config.highlightSkills;
+		
+		(new CheckBox(new Coord(320, 130), tab, "Activate radar") {
+		public void changed(boolean val) {
+		    Config.radar = !Config.radar;
+		    Config.saveOptions();
+		}
+	    }).a = Config.radar;
 	    
 	    Widget editbox = new Frame(new Coord(310, 30), new Coord(90, 100), tab);
 	    new Label(new Coord(20, 10), editbox, "Edit mode:");
@@ -413,37 +420,87 @@ public class OptWnd extends Window {
 		chkbox.a = Config.hideObjectList.contains(checkbox[1]);
 	    }
 	}
+	
+	{ /* HIGHLIGHT TAB */
+	    tab = body.new Tab(new Coord(300, 0), 80, "Highlight");
 
-	{ /* TRANSLATE OPTIONS TAB */
-	    tab = body.new Tab(new Coord(300, 0), 80, "Translation");
-	    (new CheckBox(new Coord(10, 30), tab, "Turn on") {
-		public void changed(boolean val) {
-		    GoogleTranslator.turnedon = val;
-		}
-	    }).a = GoogleTranslator.turnedon;
-
-	    new Label(new Coord(150, 35), tab, "Target Language:");
-
-	    final RadioGroup langs = new RadioGroup(tab) {
-		public void changed(int btn, String lbl) {
-		    GoogleTranslator.lang = lbl;
-		}
-	    };
-	    langs.add("en", new Coord(150, 45));
-	    langs.add("ru", new Coord(150, 70));
-	    langs.check(GoogleTranslator.lang);
-	    
-	    new Label(new Coord(25, 125), tab, "Google API Key:");
-	    final TextEntry te = new TextEntry(new Coord(25, 150), new Coord(300, 20), tab, GoogleTranslator.apikey);
-	    new Button(new Coord(330, 150), 50, tab, "set") {
-		public void click() {
-		    GoogleTranslator.apikey = te.text;
-		    Config.saveOptions();
-		}
-	    };
-	    
-	    new Label(new Coord(100, 190), tab, "Powered by Google Translate");
+	    String[][] checkboxesList = {
+		    { "Lady's Mantle", "mantle" },
+		    { "Chiming Bluebell", "chiming" },
+		    { "Edelweiss", "edelwei" },
+			{ "Bloated Bolete", "bolete" },
+			{ "Frog's Crown", "crown" },
+			{ "Peculiar Flotsam", "flotsam" },
+			{ "Stalagoom", "stalagoom" },
+			{ "Washed-up Bladderwrack", "bladderwrack" },
+			{ "Royal Toadstool", "toadstool" },
+			{ "Windsown Weed", "windweed" },
+			{ "Glimmermoss", "glimmermoss" },
+			{ "Tangled Bramble", "tangledbramble" },
+			{ "Thorny Thistle", "thornythistle" },
+			{ "Uncommon Snapdragon", "uncommonsnapdragon" },
+			{ "Cave Clay", "caveclay" },
+			{ "Cavebulb", "cavebulb" },
+			{ "Candleberry", "candleberry" },
+			{ "Rustroot", "rustroot" },
+			{ "Stinging Nettle", "stingingnettle" },
+			{ "Spindly Taproot", "spindlytaproot" },
+			{ "Blueberry", "blueberry" },
+			{ "Four-leaf Clover", "fourleafclover" },
+			{ "Chantrelle", "chantrelle" },
+			{ "Anthill", "anthill" },
+			
+			};
+	    int y = 0;
+		int x = 10;
+		boolean newcol = false;
+	    for (final String[] checkbox : checkboxesList) {
+			if(y>380) {y=0; x+=200;};
+			y += 30;
+			CheckBox chkbox = new CheckBox(new Coord(x, y), tab, checkbox[0]) {
+				public void changed(boolean val) {
+					if (val) {
+						Config.addmark(checkbox[1]);
+					} else {
+						Config.remmark(checkbox[1]);
+					}
+					Config.saveOptions();
+				}
+			};
+			chkbox.a = Config.highlightObjectList.contains(checkbox[1]);
+	    }
 	}
+
+	// { /* TRANSLATE OPTIONS TAB */
+	    // tab = body.new Tab(new Coord(300, 0), 80, "Translation");
+	    // (new CheckBox(new Coord(10, 30), tab, "Turn on") {
+		// public void changed(boolean val) {
+		    // GoogleTranslator.turnedon = val;
+		// }
+	    // }).a = GoogleTranslator.turnedon;
+
+	    // new Label(new Coord(150, 35), tab, "Target Language:");
+
+	    // final RadioGroup langs = new RadioGroup(tab) {
+		// public void changed(int btn, String lbl) {
+		    // GoogleTranslator.lang = lbl;
+		// }
+	    // };
+	    // langs.add("en", new Coord(150, 45));
+	    // langs.add("ru", new Coord(150, 70));
+	    // langs.check(GoogleTranslator.lang);
+	    
+	    // new Label(new Coord(25, 125), tab, "Google API Key:");
+	    // final TextEntry te = new TextEntry(new Coord(25, 150), new Coord(300, 20), tab, GoogleTranslator.apikey);
+	    // new Button(new Coord(330, 150), 50, tab, "set") {
+		// public void click() {
+		    // GoogleTranslator.apikey = te.text;
+		    // Config.saveOptions();
+		// }
+	    // };
+	    
+	    // new Label(new Coord(100, 190), tab, "Powered by Google Translate");
+	// }
 
 	new Frame(new Coord(-10, 20), new Coord(420, 430), this);
 	String last = Utils.getpref("optwndtab", "");
