@@ -479,6 +479,9 @@ public class Config {
         for (String objectName : hideObjectList) {
             hideObjects += objectName+",";
         }
+		for (String objectName : highlightObjectList) {
+            highlightObjects += objectName+",";
+        }
         options.setProperty("hideObjects", hideObjects);
 		options.setProperty("highlightObjects", highlightObjects);
         options.setProperty("GoogleAPIKey", GoogleTranslator.apikey);

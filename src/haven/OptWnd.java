@@ -218,7 +218,7 @@ public class OptWnd extends Window {
 		}
 	    }).a = Config.highlightSkills;
 		
-		(new CheckBox(new Coord(320, 130), tab, "Activate radar") {
+		(new CheckBox(new Coord(300, 130), tab, "Activate radar") {
 		public void changed(boolean val) {
 		    Config.radar = !Config.radar;
 		    Config.saveOptions();
