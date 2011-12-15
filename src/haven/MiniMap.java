@@ -400,55 +400,44 @@ public class MiniMap extends Widget {
 		}
 	}
 	
-	// Beasts, copied from deboon
+	// Beasts
 	if((Config.showBeast) && (!hidden)) {
-	    synchronized(ui.sess.glob.oc) {
 		g.chcolor(255, 128, 128, 255);
-		for (Gob tg : ui.sess.glob.oc) {
-				String name = tg.resname();
-				if ((tg.sc!=null) && (name.indexOf("/cdv") < 0) && ((name.indexOf("kritter/aurochs")>=0) || (name.indexOf("kritter/bear")>=0) || (name.indexOf("kritter/boar")>=0) || (name.indexOf("kritter/deer")>=0) || (name.indexOf("kritter/fox")>=0) || (name.indexOf("kritter/mufflon")>=0) || (name.indexOf("kritter/troll")>=0))) {
-					Coord c = tg.rc.div(tilesz).add(tc.inv()).add(hsz.div(2)).sub(3,3);
-					Coord size = new Coord(6,6);
-					g.fellipse(c, size);
-				}
-			}
-			g.chcolor();
-	    }
-	}
-	
-	// Curios
-	synchronized(ui.sess.glob.oc) {
-		for (Gob tg : ui.sess.glob.oc) {
-			String name = tg.resname();
-			for(String item : Config.highlightObjectList){
-				if ((tg.sc!=null)&&(name.indexOf("/cdv")<0)&&(name.indexOf(item)>=0)) {
-					Coord c = tg.rc.div(tilesz).add(tc.inv()).add(hsz.div(2)).sub(3,3);
-					Tex itim = Resource.loadtex(name);
-					Coord itimsz = itim.sz();
-					int imsz = 20;
-					int xsize;
-					int ysize;
-					if (itimsz.x > itimsz.y) {
-						xsize = imsz;
-						ysize = (int)Math.round((double)(itimsz.y)*((double)imsz/(double)itimsz.x));
-					}
-					else {
-						ysize = imsz;
-						xsize = (int)Math.round((double)(itimsz.x)*((double)imsz/(double)itimsz.y));
-					}
-					Coord size = new Coord(xsize, ysize);
-					g.chcolor(50, 50, 50, 150);
-					g.fellipse(new Coord(c.x, c.y), new Coord((int)Math.round(imsz/1.5)+2, (int)Math.round(imsz/1.5)+2));
-					g.chcolor(194, 203, 206, 100);
-					g.fellipse(c, new Coord((int)Math.round(imsz/1.5), (int)Math.round(imsz/1.5)));
-					g.chcolor();
-					c = new Coord(c.x-(size.x/2), c.y-(size.y/2));
-					g.image(itim, c, size);
-				}
-			}
+		for (Gob tg : MapView.beasts) {
+			Coord c = tg.rc.div(tilesz).add(tc.inv()).add(hsz.div(2)).sub(3,3);
+			Coord size = new Coord(6,6);
+			g.fellipse(c, size);
 		}
 		g.chcolor();
 	}
+	
+	// Curios
+	for (Gob tg : MapView.curios) {
+		String name = tg.resname();
+		Coord c = tg.rc.div(tilesz).add(tc.inv()).add(hsz.div(2)).sub(3,3);
+		Tex itim = Resource.loadtex(name);
+		Coord itimsz = itim.sz();
+		int imsz = 20;
+		int xsize;
+		int ysize;
+		if (itimsz.x > itimsz.y) {
+			xsize = imsz;
+			ysize = (int)Math.round((double)(itimsz.y)*((double)imsz/(double)itimsz.x));
+		}
+		else {
+			ysize = imsz;
+			xsize = (int)Math.round((double)(itimsz.x)*((double)imsz/(double)itimsz.y));
+		}
+		Coord size = new Coord(xsize, ysize);
+		g.chcolor(50, 50, 50, 150);
+		g.fellipse(new Coord(c.x, c.y), new Coord((int)Math.round(imsz/1.5)+2, (int)Math.round(imsz/1.5)+2));
+		g.chcolor(194, 203, 206, 100);
+		g.fellipse(c, new Coord((int)Math.round(imsz/1.5), (int)Math.round(imsz/1.5)));
+		g.chcolor();
+		c = new Coord(c.x-(size.x/2), c.y-(size.y/2));
+		g.image(itim, c, size);
+	}
+	g.chcolor();
 	
 	if((!plx.loading)&&(!hidden)) {
 	    synchronized(ui.sess.glob.party.memb) {
