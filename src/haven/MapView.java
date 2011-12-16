@@ -906,7 +906,7 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 		if(lay != null && lay.layers != null) {
 			KinInfo kin = gob.getattr(KinInfo.class);
 			for(Indir<Resource> res : lay.layers){
-				if (res.get() != null) {
+				if ((res.get() != null) && (res != null)) {
 					String r = res.get().name;
 					if(r.indexOf("body")>= 0 || r.indexOf("hair")>= 0) {
 						Resource.Neg neg = lay.base.get().layer(Resource.negc);

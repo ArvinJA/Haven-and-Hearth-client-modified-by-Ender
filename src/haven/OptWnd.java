@@ -449,7 +449,8 @@ public class OptWnd extends Window {
 			{ "Four-leaf Clover", "fourleafclover" },
 			{ "Chantrelle", "chantrelle" },
 			{ "Anthill", "anthill" },
-			
+			{ "River Pearl Mussel", "mussel" },
+			{ "Feldspar", "feldspar" },
 			};
 	    int y = 0;
 		int x = 10;
