@@ -63,18 +63,18 @@ public class OptWnd extends Window {
     }
 
     public OptWnd(Coord c, Widget parent) {
-	super(c, new Coord(400, 445), parent, "Options");
+	super(c, new Coord(400, 460), parent, "Options");
 
-	body = new Tabs(Coord.z, new Coord(400, 445), this) {
+	body = new Tabs(Coord.z, new Coord(400, 460), this) {
 	    public void changed(Tab from, Tab to) {
 		Utils.setpref("optwndtab", to.btn.text.text);
-		from.btn.c.y = 0;
-		to.btn.c.y = -2;
+		from.btn.c.y = from.btn.c.y+2;
+		to.btn.c.y = to.btn.c.y-2;
 		}};
 	Widget tab;
 
 	{ /* GENERAL TAB */
-	    tab = body.new Tab(new Coord(0, 0), 60, "General");
+	    tab = body.new Tab(new Coord(0, -2), 60, "General");
 
 	    new Button(new Coord(10, 40), 125, tab, "Quit") {
 		public void click() {
@@ -217,13 +217,6 @@ public class OptWnd extends Window {
 		    Config.saveOptions();
 		}
 	    }).a = Config.highlightSkills;
-		
-		(new CheckBox(new Coord(300, 130), tab, "Activate radar") {
-		public void changed(boolean val) {
-		    Config.radar = !Config.radar;
-		    Config.saveOptions();
-		}
-	    }).a = Config.radar;
 	    
 	    Widget editbox = new Frame(new Coord(310, 30), new Coord(90, 100), tab);
 	    new Label(new Coord(20, 10), editbox, "Edit mode:");
@@ -341,7 +334,7 @@ public class OptWnd extends Window {
 	}
 
 	{ /* AUDIO TAB */
-	    tab = body.new Tab(new Coord(140, 0), 60, "Audio");
+	    tab = body.new Tab(new Coord(0, 455), 60, "Audio");
 
 	    new Label(new Coord(10, 40), tab, "Sound volume:");
 	    new Frame(new Coord(10, 65), new Coord(20, 206), tab);
@@ -471,38 +464,25 @@ public class OptWnd extends Window {
 			chkbox.a = Config.highlightObjectList.contains(checkbox[1]);
 	    }
 	}
-
-	// { /* TRANSLATE OPTIONS TAB */
-	    // tab = body.new Tab(new Coord(300, 0), 80, "Translation");
-	    // (new CheckBox(new Coord(10, 30), tab, "Turn on") {
-		// public void changed(boolean val) {
-		    // GoogleTranslator.turnedon = val;
-		// }
-	    // }).a = GoogleTranslator.turnedon;
-
-	    // new Label(new Coord(150, 35), tab, "Target Language:");
-
-	    // final RadioGroup langs = new RadioGroup(tab) {
-		// public void changed(int btn, String lbl) {
-		    // GoogleTranslator.lang = lbl;
-		// }
-	    // };
-	    // langs.add("en", new Coord(150, 45));
-	    // langs.add("ru", new Coord(150, 70));
-	    // langs.check(GoogleTranslator.lang);
-	    
-	    // new Label(new Coord(25, 125), tab, "Google API Key:");
-	    // final TextEntry te = new TextEntry(new Coord(25, 150), new Coord(300, 20), tab, GoogleTranslator.apikey);
-	    // new Button(new Coord(330, 150), 50, tab, "set") {
-		// public void click() {
-		    // GoogleTranslator.apikey = te.text;
-		    // Config.saveOptions();
-		// }
-	    // };
-	    
-	    // new Label(new Coord(100, 190), tab, "Powered by Google Translate");
-	// }
-
+	
+	{ /* NEW OPTIONS TAB */
+	    tab = body.new Tab(new Coord(140, 0), 60, "New");
+		
+		(new CheckBox(new Coord(10, 40), tab, "Hostile radar") {
+		public void changed(boolean val) {
+		    Config.radar = !Config.radar;
+		    Config.saveOptions();
+		}
+	    }).a = Config.radar;
+		
+		(new CheckBox(new Coord(10, 70), tab, "Curio radar") {
+		public void changed(boolean val) {
+		    Config.mark = !Config.mark;
+		    Config.saveOptions();
+		}
+	    }).a = Config.radar;
+	}
+	
 	new Frame(new Coord(-10, 20), new Coord(420, 430), this);
 	String last = Utils.getpref("optwndtab", "");
 	for (Tabs.Tab t : body.tabs) {

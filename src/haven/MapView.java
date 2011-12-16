@@ -1237,7 +1237,9 @@ public class MapView extends Widget implements DTarget, Console.Directory {
 		if(k != null)
 		    kin.add(k);
 			
-			drawhighlight(g, gob);
+			if(Config.mark){
+				drawhighlight(g, gob);
+			}
 			if(Config.showBeast){
 				drawboarradius(g, gob);
 				beastradar(g, gob);
